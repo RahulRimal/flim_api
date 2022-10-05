@@ -32,7 +32,7 @@ class Customer(models.Model):
 
 
 class Category(models.Model):
-    name: models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     featured_equipment = models.ForeignKey(
         'Equipment', on_delete=models.SET_NULL, null=True,  blank=True, related_name='+')
 
@@ -47,14 +47,20 @@ class Equipment(models.Model):
     # price = models.DecimalField(
     #     max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
     inventory = models.IntegerField(validators=[MinValueValidator(1)])
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    company = models.CharField(max_length=255)
-    siteDelivery = models.BooleanField(default=False)
-    freeDeliver = models.BooleanField(default=False)
-    featured_image = models.ForeignKey(
-        'EquipmentImage', on_delete=models.PROTECT, related_name='+')
+    category = models.ForeignKey(
+        Category, on_delete=models.PROTECT, null=True, blank=True)
+    company = models.CharField(max_length=255, null=True, blank=True)
+    site_delivery = models.BooleanField(default=False)
+    free_delivery = models.BooleanField(default=False)
+    # featured_image = models.ForeignKey(
+    #     'EquipmentImage', on_delete=models.PROTECT, related_name='+')
+    featured_image = models.ImageField(upload_to='store/images',
+                                       validators=[validate_file_size])
     last_update = models.DateTimeField(auto_now=True)
     # technical_specs:
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class TechnicalSpecification(models.Model):
