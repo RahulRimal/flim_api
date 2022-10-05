@@ -16,12 +16,18 @@ class EquipmentImageInline(admin.TabularInline):
     model = models.EquipmentImage
 
 
+class EquipmentPriceInline(admin.TabularInline):
+    min_num = 4
+    max_num = 4
+    model = models.EquipmentPrice
+
+
 @admin.register(models.Equipment)
 class EquipmentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description', 'inventory',
+    list_display = ['id', 'name', 'description', 'inventory',
                     'category', 'company', 'site_delivery', 'free_delivery', 'last_update']
     prepopulated_fields = {'slug': ['name']}
-    inlines = [EquipmentImageInline]
+    inlines = [EquipmentPriceInline, EquipmentImageInline]
 
 
 @admin.register(models.Category)

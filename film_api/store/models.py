@@ -44,17 +44,14 @@ class Equipment(models.Model):
     slug = models.SlugField()
     name = models.CharField(max_length=255)
     description = models.TextField()
-    # price = models.DecimalField(
-    #     max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+    # price = models.OneToOneField(EquipmentPrice, on_delete=models.PROTECT)
     inventory = models.IntegerField(validators=[MinValueValidator(1)])
     category = models.ForeignKey(
         Category, on_delete=models.PROTECT, null=True, blank=True)
     company = models.CharField(max_length=255, null=True, blank=True)
     site_delivery = models.BooleanField(default=False)
     free_delivery = models.BooleanField(default=False)
-    # featured_image = models.ForeignKey(
-    #     'EquipmentImage', on_delete=models.PROTECT, related_name='+')
-    featured_image = models.ImageField(upload_to='store/images',
+    featured_image = models.ImageField(upload_to='equipment/images',
                                        validators=[validate_file_size])
     last_update = models.DateTimeField(auto_now=True)
     # technical_specs:
@@ -63,15 +60,30 @@ class Equipment(models.Model):
         return self.name
 
 
+class EquipmentPrice(models.Model):
+    price_1_day = models.DecimalField(
+        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+    price_2_to_4_days = models.DecimalField(
+        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+    price_5_to_7_days = models.DecimalField(
+        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+    price_8_and_more_days = models.DecimalField(
+        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+
+    equipment = models.OneToOneField(
+        Equipment, on_delete=models.CASCADE, related_name='price')
+
+
 class TechnicalSpecification(models.Model):
     specification = models.CharField(max_length=255)
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
 
 
 class EquipmentImage(models.Model):
-    image = models.ImageField(upload_to='store/images',
+    image = models.ImageField(upload_to='equipment/images',
                               validators=[validate_file_size])
-    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    equipment = models.ForeignKey(
+        Equipment, on_delete=models.CASCADE, related_name='images')
 
 
 class Cart(models.Model):
@@ -85,3 +97,5 @@ class CartItem(models.Model):
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1)])
+    tenure = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
