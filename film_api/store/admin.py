@@ -7,7 +7,8 @@ from . import models
 
 @admin.register(models.Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email', 'username']
+    list_display = ['id', 'first_name', 'last_name', 'email', 'username']
+    search_fields = ['first_name']
 
 
 class EquipmentImageInline(admin.TabularInline):
@@ -37,6 +38,7 @@ class EquipmentAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ['name']}
     inlines = [EquipmentPriceInline,
                TechnicalSpecificationInline, EquipmentImageInline]
+    search_fields = ['name']
 
 
 @admin.register(models.Category)
@@ -47,3 +49,19 @@ class CategoryAdmin(admin.ModelAdmin):
 # @admin.register(models.EquipmentImage)
 # class EquipmentImageAdmin(admin.ModelAdmin):
 #     list_display = ['image']
+
+
+class OrderItemInline(admin.TabularInline):
+    autocomplete_fields = ['equipment']
+    min_num = 1
+    max_num = 10
+    model = models.OrderItem
+    extra = 0
+
+
+@admin.register(models.Order)
+class OrderAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['customer']
+    inlines = [OrderItemInline]
+    list_display = ['id', 'placed_at', 'customer',
+                    'booking_payment_status', 'full_payment_status']
