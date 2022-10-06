@@ -2,7 +2,13 @@ from dataclasses import field, fields
 from rest_framework import serializers
 
 
-from .models import Cart, CartItem, Equipment, EquipmentImage, EquipmentPrice
+from .models import Cart, CartItem, Category, Equipment, EquipmentImage, EquipmentPrice, TechnicalSpecification
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name']
 
 
 class EquipmentImageSerializer(serializers.ModelSerializer):
@@ -13,13 +19,13 @@ class EquipmentImageSerializer(serializers.ModelSerializer):
 
 class EquipmentPriceSerializer(serializers.ModelSerializer):
     _1 = serializers.DecimalField(
-        max_digits=6, decimal_places=2, source='price_1_day')
+        max_digits=8, decimal_places=2, source='price_1_day')
     _2_4 = serializers.DecimalField(
-        max_digits=6, decimal_places=2, source='price_2_to_4_days')
+        max_digits=8, decimal_places=2, source='price_2_to_4_days')
     _5_7 = serializers.DecimalField(
-        max_digits=6, decimal_places=2, source='price_5_to_7_days')
+        max_digits=8, decimal_places=2, source='price_5_to_7_days')
     _8_more = serializers.DecimalField(
-        max_digits=6, decimal_places=2, source='price_8_and_more_days')
+        max_digits=8, decimal_places=2, source='price_8_and_more_days')
 
     class Meta:
         model = EquipmentPrice
@@ -29,17 +35,27 @@ class EquipmentPriceSerializer(serializers.ModelSerializer):
         #           'price_5_to_7_days', 'price_8_and_more_days']
 
 
+class TechnicalSpecificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TechnicalSpecification
+        fields = ['specification']
+
+
 class EquipmentSerializer(serializers.ModelSerializer):
 
     # equipmentimage_set = EquipmentImageSerializer(many=True)
     images = EquipmentImageSerializer(many=True)
     price = EquipmentPriceSerializer()
+    category = CategorySerializer()
+    # technicalspecification_set = TechnicalSpecificationSerializer(many=True)
+    technical_specification = TechnicalSpecificationSerializer(
+        many=True, source='technicalspecification_set')
 
     class Meta:
         model = Equipment
         # fields = ['id', 'name', 'slug', 'description',
         #           'inventory', 'category', 'company', 'featured_image', 'equipmentimage_set']
-        fields = ['id', 'name', 'slug', 'description',
+        fields = ['id', 'name', 'slug', 'description', 'technical_specification',
                   'inventory', 'price', 'category', 'company', 'featured_image', 'images']
 
 

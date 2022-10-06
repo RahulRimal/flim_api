@@ -39,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'corsheaders',
     'rest_framework',
     'core',
     'store',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,6 +56,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# CORS_ALLOW_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000'
+# ]
 
 ROOT_URLCONF = 'film_api.urls'
 
@@ -140,8 +154,3 @@ REST_FRAMEWORK = {
 
 
 AUTH_USER_MODEL = 'core.User'
-
-
-INTERNAL_IPS = [
-    "127.0.0.1",
-]

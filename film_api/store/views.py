@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from .permissions import ReadOnly
 
-from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, EquipmentSerializer, UpdateCartItemSerializer
+from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, EquipmentSerializer, SimpleEquipmentSerializer, UpdateCartItemSerializer
 
 from .models import Cart, CartItem, Equipment
 
@@ -18,7 +18,13 @@ class EquipmentViewSet(ModelViewSet):
     # print(Equipment._meta.get_fields() )
     queryset = Equipment.objects.prefetch_related(
         'images', 'price') .all()
-    serializer_class = EquipmentSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return SimpleEquipmentSerializer
+        return EquipmentSerializer
+
+    # serializer_class = EquipmentSerializer
 
     permission_classes = [ReadOnly]
 

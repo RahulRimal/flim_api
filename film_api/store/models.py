@@ -39,6 +39,9 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Categories'
+
 
 class Equipment(models.Model):
     slug = models.SlugField()
@@ -62,13 +65,13 @@ class Equipment(models.Model):
 
 class EquipmentPrice(models.Model):
     price_1_day = models.DecimalField(
-        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+        max_digits=8, decimal_places=2, validators=[MinValueValidator(1)])
     price_2_to_4_days = models.DecimalField(
-        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+        max_digits=8, decimal_places=2, validators=[MinValueValidator(1)])
     price_5_to_7_days = models.DecimalField(
-        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+        max_digits=8, decimal_places=2, validators=[MinValueValidator(1)])
     price_8_and_more_days = models.DecimalField(
-        max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+        max_digits=8, decimal_places=2, validators=[MinValueValidator(1)])
 
     equipment = models.OneToOneField(
         Equipment, on_delete=models.CASCADE, related_name='price')

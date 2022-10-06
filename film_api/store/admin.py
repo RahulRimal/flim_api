@@ -22,12 +22,21 @@ class EquipmentPriceInline(admin.TabularInline):
     model = models.EquipmentPrice
 
 
+class TechnicalSpecificationInline(admin.TabularInline):
+    # class TechnicalSpecificationInline(admin.StackedInline):
+    model = models.TechnicalSpecification
+    min_num = 4
+    # max_num = 4
+    extra = 0
+
+
 @admin.register(models.Equipment)
 class EquipmentAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'description', 'inventory',
                     'category', 'company', 'site_delivery', 'free_delivery', 'last_update']
     prepopulated_fields = {'slug': ['name']}
-    inlines = [EquipmentPriceInline, EquipmentImageInline]
+    inlines = [EquipmentPriceInline,
+               TechnicalSpecificationInline, EquipmentImageInline]
 
 
 @admin.register(models.Category)
