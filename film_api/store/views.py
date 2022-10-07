@@ -28,19 +28,21 @@ class EquipmentViewSet(ModelViewSet):
             return SimpleEquipmentSerializer
         return EquipmentSerializer
 
-    # serializer_class = EquipmentSerializer
-
     permission_classes = [ReadOnly]
-    # permission_classes = [IsAdminUser]
 
 
 class CartViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
+
+    # def get_queryset(self):
+    #     if (self.request.user.is_superuser):
+    #         return Cart.objects.prefetch_related('items__equipment').all()
+    #     return Cart.objects.filter()
+
     queryset = Cart.objects.prefetch_related('items__equipment').all()
     serializer_class = CartSerializer
 
 
 class CartItemViewSet(ModelViewSet):
-    # serializer_class = CartItemSerializer
 
     http_method_names = ['get', 'post', 'patch', 'delete']
 

@@ -12,10 +12,20 @@ from .validators import validate_file_size
 
 
 class Customer(models.Model):
-    # user = models.OneToOneField(
-    #     settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
+    MEMBERSHIP_BRONZE = 'B'
+    MEMBERSHIP_SILVER = 'S'
+    MEMBERSHIP_GOLD = 'G'
+
+    MEMBERSHIP_CHOICES = [
+        (MEMBERSHIP_BRONZE, 'Bronze'),
+        (MEMBERSHIP_SILVER, 'Silver'),
+        (MEMBERSHIP_GOLD, 'Gold'),
+    ]
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    membership = models.CharField(
+        max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
 
     def first_name(self):
         return self.user.first_name
@@ -31,6 +41,13 @@ class Customer(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user.id} => {self.user.first_name} {self.user.last_name}"
+
+
+class Address(models.Model):
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE)
 
 
 class Category(models.Model):

@@ -62,6 +62,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class SimpleEquipmentSerializer(serializers.ModelSerializer):
     price = EquipmentPriceSerializer()
+    category = CategorySerializer()
 
     class Meta:
         model = Equipment
