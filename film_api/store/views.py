@@ -2,13 +2,14 @@ from urllib import request
 from django.shortcuts import render
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.decorators import action
 
 from rest_framework.response import Response
 
 from .permissions import ReadOnly
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
-from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CreateOrderSerializer, EquipmentSerializer, OrderSerializer, SimpleEquipmentSerializer, UpdateCartItemSerializer, UpdateOrderSerializer
+from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CreateOrderSerializer, EquipmentSerializer, OrderSerializer, SimpleEquipmentSerializer, UpdateCartItemSerializer, UpdateOrderSerializer, CustomerSerializer
 
 from .models import Cart, CartItem, Customer, Equipment, Order
 
@@ -93,3 +94,21 @@ class OrderViewSet(ModelViewSet):
         customer_id = Customer.objects.only('id').get(user_id=user.id)
 
         return Order.objects.filter(customer_id=customer_id)
+
+
+class CustomerViewSet(ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+
+    @action(detail=False, methods=['GET', 'PUT'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        customer = Customer.objects.get(
+            user_id=request.user.id)
+        if request.method == 'GET':
+            serializer = CustomerSerializer(customer)
+            return Response(serializer.data)
+        elif request.method == 'PUT':
+            serializer = CustomerSerializer(customer, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)

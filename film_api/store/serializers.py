@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.db import transaction
 
 
-from .models import Cart, CartItem, Category, Customer, Equipment, EquipmentImage, EquipmentPrice, Order, OrderItem, TechnicalSpecification
+from .models import Address, Cart, CartItem, Category, Customer, Equipment, EquipmentImage, EquipmentPrice, Order, OrderItem, TechnicalSpecification
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -180,3 +180,18 @@ class CreateOrderSerializer(serializers.Serializer):
         # order_created.send_robust(self.__class__, order=order)
 
         return order
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['city', 'street', 'zipcode']
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+
+    class Meta:
+        model = Customer
+        fields = ['id', 'first_name', 'last_name',
+                  'username', 'email', 'phone', 'address', 'membership']

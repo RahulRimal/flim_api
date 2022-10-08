@@ -23,6 +23,7 @@ class Customer(models.Model):
     ]
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=11)
 
     membership = models.CharField(
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
@@ -46,8 +47,9 @@ class Customer(models.Model):
 class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    customer = models.ForeignKey(
-        Customer, on_delete=models.CASCADE)
+    zipcode = models.CharField(max_length=10)
+    customer = models.OneToOneField(
+        Customer, on_delete=models.CASCADE, related_name='address')
 
 
 class Category(models.Model):

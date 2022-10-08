@@ -5,10 +5,17 @@ from . import models
 # Register your models here.
 
 
+class AddressAdminInline(admin.TabularInline):
+    # list_display = ['city', 'street', 'zipcode']
+    model = models.Address
+    max_num = 1
+
+
 @admin.register(models.Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['id', 'first_name', 'last_name', 'email', 'username']
     search_fields = ['first_name']
+    inlines = [AddressAdminInline]
 
 
 class EquipmentImageInline(admin.TabularInline):
