@@ -9,7 +9,9 @@ from .models import Address, Cart, CartItem, Category, Customer, Equipment, Equi
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['name']
+        fields = ['id', 'name', 'equipments_count']
+
+    equipments_count = serializers.IntegerField(read_only=True)
 
 
 class EquipmentImageSerializer(serializers.ModelSerializer):

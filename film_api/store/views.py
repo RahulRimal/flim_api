@@ -1,17 +1,28 @@
+import imp
 from urllib import request
 from django.shortcuts import render
 
+from django.db.models.aggregates import Count
+
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import action
+from rest_framework import status
+
+from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 from rest_framework.response import Response
 
-from .permissions import ReadOnly
+from store.filters import EquipmentFilter
+from store.pagination import DefaultPagination
+
+from .permissions import IsAdminOrReadOnly, ReadOnly
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
-from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CreateOrderSerializer, EquipmentSerializer, OrderSerializer, SimpleEquipmentSerializer, UpdateCartItemSerializer, UpdateOrderSerializer, CustomerSerializer
+from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CategorySerializer, CreateOrderSerializer, EquipmentSerializer, OrderSerializer, SimpleEquipmentSerializer, UpdateCartItemSerializer, UpdateOrderSerializer, CustomerSerializer
 
-from .models import Cart, CartItem, Customer, Equipment, Order
+from .models import Cart, CartItem, Category, Customer, Equipment, Order
 
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin
 
@@ -23,6 +34,11 @@ class EquipmentViewSet(ModelViewSet):
     # print(Equipment._meta.get_fields() )
     queryset = Equipment.objects.prefetch_related(
         'images', 'price') .all()
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = EquipmentFilter
+    pagination_class = DefaultPagination
+    search_fields = ['name', 'description']
+    ordering_fields = ['last_update']
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -30,6 +46,19 @@ class EquipmentViewSet(ModelViewSet):
         return EquipmentSerializer
 
     permission_classes = [ReadOnly]
+
+
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.annotate(
+        equipments_count=Count('equipment')).all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def destroy(self, request, *args, **kwargs):
+        if Equipment.objects.filter(category_id=kwargs['pk']):
+            return Response({'error': 'Category cannot be deleted because it includes one or more products.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        return super().destroy(request, *args, **kwargs)
 
 
 class CartViewSet(CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):

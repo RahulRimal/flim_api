@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'rest_framework',
+    'django_filters',
     'core',
     'store',
 ]
