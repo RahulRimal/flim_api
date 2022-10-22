@@ -1,4 +1,5 @@
 from dataclasses import field, fields
+from enum import unique
 from rest_framework import serializers
 from django.db import transaction
 
@@ -7,11 +8,25 @@ from .models import Address, Cart, CartItem, Category, Customer, Equipment, Equi
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    equipments_count = serializers.IntegerField(read_only=True)
+    # company = serializers.CharField()
+    companies = serializers.SerializerMethodField(
+        method_name='get_equipment_companies')
+
     class Meta:
         model = Category
-        fields = ['id', 'name', 'equipments_count']
+        fields = ['id', 'name', 'equipments_count', 'companies']
 
-    equipments_count = serializers.IntegerField(read_only=True)
+    def get_equipment_companies(self, obj):
+        companies = []
+        equips = Equipment.objects.filter(category_id=obj.id).all()
+        if equips:
+            for x in equips:
+                if x.company:
+                    companies.append(x.company)
+
+        companies = list(set(companies))
+        return companies
 
 
 class EquipmentImageSerializer(serializers.ModelSerializer):

@@ -9,7 +9,7 @@ router = routers.DefaultRouter()
 router.register('categories', views.CategoryViewSet)
 router.register('equipments', views.EquipmentViewSet)
 router.register('carts', views.CartViewSet)
-router.register('orders', views.OrderViewSet, basename='order')
+router.register('orders', views.OrderViewSet, basename='orders')
 router.register('customers', views.CustomerViewSet)
 
 carts_router = routers.NestedDefaultRouter(router, 'carts', lookup='cart')

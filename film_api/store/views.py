@@ -3,6 +3,7 @@ from urllib import request
 from django.shortcuts import render
 
 from django.db.models.aggregates import Count
+from django.db.models import F, Q
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import action
@@ -51,6 +52,7 @@ class EquipmentViewSet(ModelViewSet):
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.annotate(
         equipments_count=Count('equipment')).all()
+
     serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
 
