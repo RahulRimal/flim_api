@@ -167,6 +167,13 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'core.serializers.UserCreateSerializer',
+    }
+}
+
 # admin: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY1MTYzMjUzLCJqdGkiOiI1YWE3Y2M2NDExZjA0ZjEyOTI3M2EzZmQ3NGEzN2RiZCIsInVzZXJfaWQiOjF9.Q13GXf1_43eFtydkLIGs_OrAOImpH38D8pIw-t8aujo
 
 # test: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY1MTYzMjEzLCJqdGkiOiJlZWY0NTQ3MjhlNjc0NWQwYmQxNGE5Y2Y0M2YzM2M4MiIsInVzZXJfaWQiOjJ9.BWoOrWaswa3OxDRfniZtK6WHht0aUv2C3T9fjrfCb3E
