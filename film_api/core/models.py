@@ -7,4 +7,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    USERNAME_FIELD = 'email'
     email = models.EmailField(unique=True, null=False)
+    # email = models.EmailField(('email address'), unique=True)
+    REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
