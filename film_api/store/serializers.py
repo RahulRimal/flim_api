@@ -3,30 +3,21 @@ from enum import unique
 from rest_framework import serializers
 from django.db import transaction
 
+from rest_framework.settings import import_from_string
+
 
 from .models import Address, Cart, CartItem, Category, Customer, Equipment, EquipmentImage, EquipmentPrice, Order, OrderItem, TechnicalSpecification
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    equipments_count = serializers.IntegerField(read_only=True)
-    # company = serializers.CharField()
-    companies = serializers.SerializerMethodField(
-        method_name='get_equipment_companies')
+class SimpleCategorySerializer(serializers.ModelSerializer):
+
+    # equipments_count = serializers.IntegerField(read_only=True)
+    # companies = serializers.SerializerMethodField(
+    #     method_name='get_equipment_companies')
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'equipments_count', 'companies']
-
-    def get_equipment_companies(self, obj):
-        companies = []
-        equips = Equipment.objects.filter(category_id=obj.id).all()
-        if equips:
-            for x in equips:
-                if x.company:
-                    companies.append(x.company)
-
-        companies = list(set(companies))
-        return companies
+        fields = ['id', 'name']
 
 
 class EquipmentImageSerializer(serializers.ModelSerializer):
@@ -64,7 +55,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
     # equipmentimage_set = EquipmentImageSerializer(many=True)
     images = EquipmentImageSerializer(many=True)
     price = EquipmentPriceSerializer()
-    category = CategorySerializer()
+    category = SimpleCategorySerializer()
     # technicalspecification_set = TechnicalSpecificationSerializer(many=True)
     technical_specification = TechnicalSpecificationSerializer(
         many=True, source='technicalspecification_set')
@@ -79,12 +70,37 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class SimpleEquipmentSerializer(serializers.ModelSerializer):
     price = EquipmentPriceSerializer()
-    category = CategorySerializer()
+    category = SimpleCategorySerializer()
 
     class Meta:
         model = Equipment
         fields = ['id', 'name',
                   'inventory', 'price', 'category', 'company', 'featured_image']
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    equipments_count = serializers.IntegerField(read_only=True)
+    # company = serializers.CharField()
+    companies = serializers.SerializerMethodField(
+        method_name='get_equipment_companies')
+    featured_equipment = SimpleEquipmentSerializer()
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'equipments_count',
+                  'featured_equipment', 'companies']
+
+    def get_equipment_companies(self, obj):
+        companies = []
+        equips = Equipment.objects.filter(category_id=obj.id).all()
+        if equips:
+            for x in equips:
+                if x.company:
+                    companies.append(x.company)
+
+        companies = list(set(companies))
+        return companies
 
 
 class CartItemSerializer(serializers.ModelSerializer):
