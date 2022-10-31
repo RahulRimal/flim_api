@@ -1,4 +1,5 @@
 
+from unittest.util import _MAX_LENGTH
 from uuid import uuid4
 from django.db import models
 
@@ -125,6 +126,15 @@ class CartItem(models.Model):
     location = models.CharField(max_length=255)
 
 
+class BillingInfo(models.Model):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=10)
+    email = models.EmailField(max_length=255)
+    convenient_location = models.CharField(
+        max_length=255, null=True, blank=True)
+
+
 class Order(models.Model):
     PAYMENT_STATUS_PENDING = 'P'
     PAYMENT_STATUS_COMPLETE = 'C'
@@ -141,6 +151,7 @@ class Order(models.Model):
     booking_payment_status = models.CharField(
         max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    billing_info = models.OneToOneField(BillingInfo, on_delete=models.CASCADE)
 
     # class Meta:
     #     permissions = [

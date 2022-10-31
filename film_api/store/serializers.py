@@ -6,7 +6,7 @@ from django.db import transaction
 from rest_framework.settings import import_from_string
 
 
-from .models import Address, Cart, CartItem, Category, Customer, Equipment, EquipmentImage, EquipmentPrice, Order, OrderItem, TechnicalSpecification
+from .models import Address, BillingInfo, Cart, CartItem, Category, Customer, Equipment, EquipmentImage, EquipmentPrice, Order, OrderItem, TechnicalSpecification
 
 
 class SimpleCategorySerializer(serializers.ModelSerializer):
@@ -162,13 +162,21 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'equipment', 'quantity', 'location', 'tenure']
 
 
+class BillingInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillingInfo
+        fields = ['first_name', 'last_name',
+                  'phone', 'email', 'convenient_location']
+
+
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
+    billing_info = BillingInfoSerializer()
 
     class Meta:
         model = Order
         fields = ['id', 'customer', 'items', 'full_payment_status',
-                  'booking_payment_status', 'placed_at']
+                  'booking_payment_status', 'billing_info', 'placed_at']
 
 
 class UpdateOrderSerializer(serializers.ModelSerializer):
@@ -179,6 +187,7 @@ class UpdateOrderSerializer(serializers.ModelSerializer):
 
 class CreateOrderSerializer(serializers.Serializer):
     cart_id = serializers.UUIDField()
+    billing_info = BillingInfoSerializer()
 
     def validate_cart_id(self, cart_id):
         if not Cart.objects.filter(pk=cart_id).exists():
@@ -194,7 +203,10 @@ class CreateOrderSerializer(serializers.Serializer):
 
             (customer, created) = Customer.objects.get_or_create(
                 user_id=self.context['user_id'])
-        order = Order.objects.create(customer=customer)
+        billing_info = BillingInfo.objects.create(
+            ** self.validated_data['billing_info'])
+        order = Order.objects.create(
+            customer=customer, billing_info=billing_info)
         cart_items = CartItem.objects.select_related(
             'equipment').filter(cart_id=cart_id)
         order_items = [
