@@ -57,6 +57,14 @@ class CategoryAdmin(admin.ModelAdmin):
 # class EquipmentImageAdmin(admin.ModelAdmin):
 #     list_display = ['image']
 
+class BillinfInfoInline(admin.StackedInline):
+    model = models.BillingInfo
+    min_num = 1
+    max_num = 1
+    extra = 0
+    readonly_fields = ['first_name', 'last_name',
+                       'email', 'phone', 'convenient_location']
+
 
 class OrderItemInline(admin.TabularInline):
     autocomplete_fields = ['equipment']
@@ -64,11 +72,13 @@ class OrderItemInline(admin.TabularInline):
     max_num = 10
     model = models.OrderItem
     extra = 0
+    readonly_fields = ['equipment', 'quantity', 'tenure', 'location']
 
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ['customer']
-    inlines = [OrderItemInline]
+    inlines = [BillinfInfoInline, OrderItemInline]
     list_display = ['id', 'placed_at', 'customer',
                     'booking_payment_status', 'full_payment_status']
+    readonly_fields = ['customer']

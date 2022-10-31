@@ -203,10 +203,11 @@ class CreateOrderSerializer(serializers.Serializer):
 
             (customer, created) = Customer.objects.get_or_create(
                 user_id=self.context['user_id'])
-        billing_info = BillingInfo.objects.create(
-            ** self.validated_data['billing_info'])
+
         order = Order.objects.create(
-            customer=customer, billing_info=billing_info)
+            customer=customer)
+        billing_info = BillingInfo.objects.create(
+            ** self.validated_data['billing_info'], order=order)
         cart_items = CartItem.objects.select_related(
             'equipment').filter(cart_id=cart_id)
         order_items = [
