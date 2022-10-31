@@ -63,7 +63,7 @@ class BillinfInfoInline(admin.StackedInline):
     max_num = 1
     extra = 0
     readonly_fields = ['first_name', 'last_name',
-                       'email', 'phone', 'convenient_location']
+                       'email', 'phone', 'convenient_location', 'side_note']
 
 
 class OrderItemInline(admin.TabularInline):

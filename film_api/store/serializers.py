@@ -166,7 +166,7 @@ class BillingInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillingInfo
         fields = ['first_name', 'last_name',
-                  'phone', 'email', 'convenient_location']
+                  'phone', 'email', 'convenient_location', 'side_note']
 
 
 class OrderSerializer(serializers.ModelSerializer):

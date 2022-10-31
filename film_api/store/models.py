@@ -142,7 +142,6 @@ class Order(models.Model):
     booking_payment_status = models.CharField(
         max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
-    # billing_info = models.OneToOneField(BillingInfo, on_delete=models.CASCADE)
 
     # class Meta:
     #     permissions = [
@@ -157,6 +156,7 @@ class BillingInfo(models.Model):
     email = models.EmailField(max_length=255)
     convenient_location = models.CharField(
         max_length=255, null=True, blank=True)
+    side_note = models.TextField(null=True, blank=True)
     order = models.OneToOneField(
         Order, on_delete=models.PROTECT, related_name='billing_info')
 
