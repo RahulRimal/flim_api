@@ -101,12 +101,19 @@ WSGI_APPLICATION = 'film_api.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'film_api',
+    #     'HOST': 'localhost',
+    #     'USER': 'root',
+    #     'PASSWORD': ''
+    # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'film_api',
-        'HOST': 'localhost',
-        'USER': 'root',
-        'PASSWORD': ''
+        'HOST': 'db4free.net',
+        'USER': 'film_api_user',
+        'PASSWORD': 'password'
     }
 }
 
