@@ -1,8 +1,8 @@
 {
-    "version": 1,
+    "version": 2,
     "builds": [
         {
-            "src": "share_learning/wsgi.py",
+            "src": "film_api/wsgi.py",
             "use": "@vercel/python",
             "config": {"maxLambdaSize": "15mb", "runtime": "python3.9"}
         }
@@ -11,7 +11,7 @@
     "routes":[
     {
         "src": "/(.*)",
-        "dest": "share_learning/wsgi.py"
+        "dest": "film_apiwsgi.py"
     }
 ]
 }
