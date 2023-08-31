@@ -11,4 +11,4 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     email = models.EmailField(unique=True, null=False)
     # email = models.EmailField(_('email address'), unique=True)
-    REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
+    REQUIRED_FIELDS = ['username']  # removes email from REQUIRED_FIELDS
